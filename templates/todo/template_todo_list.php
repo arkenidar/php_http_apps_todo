@@ -1,12 +1,12 @@
 <?php
-    //$_wrap_with('template_wrapper');
+    $_wrap_with('template_wrapper');
 ?>
 
-<title>To Do</title>
+<title>To-Do List.</title>
 
-<p>To Do Items</p>
+<div>To-Do List.</div>
 <form method="post" action="?r=todo_add">
-<input name="item" placeholder="label of the todo item" autofocus="true">
+<input name="item" placeholder="list item" autofocus="true">
 <input type="submit" value="add">
 </form>
 <?php foreach($_u('items') as $item) { ?>
