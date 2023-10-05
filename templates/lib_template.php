@@ -25,7 +25,8 @@ function apply_template($template_file, $template_variables, $path_prefix=null){
 
     $_get_wrapped_content = function(){
         global $_u;
-        return array_pop($_u('wrapped_content'));
+        $wrapped_content = $_u('wrapped_content');
+        return array_pop( $wrapped_content );
     };
 
     ob_start();
