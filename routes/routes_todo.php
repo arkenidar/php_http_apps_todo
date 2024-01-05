@@ -1,9 +1,16 @@
 <?php
 
+/*
 function routes_todo_list($request_variables){
     require_once 'manager/todo_manager.php';
     todo_render();
 }
+*/
+
+$routes['todo_list'] = function($request_variables){
+    require_once 'manager/todo_manager.php';
+    todo_render();
+};
 
 function routes_todo_add($request_variables){
     require_once 'manager/todo_manager.php';
