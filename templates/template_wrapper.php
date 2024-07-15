@@ -1,10 +1,17 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta charset="UTF-8">
+<head>
 
-</head><body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
 
-<?= $_get_wrapped_content() ?>
+</head>
 
-</body></html>
+<body>
+
+    <?= $_get_wrapped_content() ?>
+
+</body>
+
+</html>
