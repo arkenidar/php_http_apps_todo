@@ -18,7 +18,7 @@ function serve_request($request_variables = [])
     } else if (function_exists("routes_$route")) {
         $function_name = "routes_$route";
         $function_name($request_variables);
-    } else echo 'RouteNotFound';
+    } else echo 'RouteNotFound';//.": ( $route )"; //unsafe: it may be injectable (code injection)
 }
 function serve_request_ob($request_variables = [])
 {
