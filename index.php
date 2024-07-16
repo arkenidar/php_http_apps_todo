@@ -11,14 +11,15 @@ function serve_request($request_variables = [])
     $routes = [];
     require 'routes/_router.php';
 
-    $route = (string)@$request_variables['r'];
+    $route = (string) @$request_variables['r'];
 
     if (isset($routes[$route])) {
         ($routes[$route])($request_variables);
     } else if (function_exists("routes_$route")) {
         $function_name = "routes_$route";
         $function_name($request_variables);
-    } else echo 'RouteNotFound';//.": ( $route )"; //unsafe: it may be injectable (code injection)
+    } else
+        echo 'RouteNotFound';
 }
 function serve_request_ob($request_variables = [])
 {
