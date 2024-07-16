@@ -1,0 +1,16 @@
+RewriteEngine On
+
+# ls -a # "-a" flag : for listing dot-files also
+
+# allowed: index.php , www/
+# denied: all the rest
+
+RewriteRule .git - [F]
+RewriteRule .htaccess - [F]
+RewriteRule .idea - [F]
+RewriteRule db - [F]
+RewriteRule docs - [F]
+RewriteRule manager - [F]
+RewriteRule readme.md - [F]
+RewriteRule routes - [F]
+RewriteRule templates - [F]
