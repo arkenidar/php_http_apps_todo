@@ -3,7 +3,10 @@
 
 <head>
 
-    <!-- title>php http app</title> -->
+    <?php $wrapped_content = $_get_wrapped_content(); ?>
+
+    <!-- <title> php-http app </title> -->
+    <title> <?= $GLOBALS['_title_tag_content'] ?> </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
@@ -20,14 +23,14 @@
 
 <body>
 
-    <a href="https://github.com/arkenidar/php_http_apps_todo" target="_blank" >
+    <a href="https://github.com/arkenidar/php_http_apps_todo" target="_blank">
         ORIGIN : gh repo clone arkenidar/php_http_apps_todo ( from GitHub ) </a>
     <hr>
 
-    <?= $_get_wrapped_content() ?>
+    <?= $wrapped_content ?>
 
     <hr>
-    <a href="https://arkenidar.com/coder.html" target="_blank" > coder : arkenidar </a>
+    <a href="https://arkenidar.com/coder.html" target="_blank"> coder : arkenidar </a>
 
 </body>
 
