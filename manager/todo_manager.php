@@ -59,5 +59,9 @@ function todo_render_detail($id)
 
 function todo_update($id, $description)
 {
+    if (trim($description) == '') {
+        todo_remove($id);
+        return;
+    }
     query('UPDATE todos SET description=:description WHERE id=:id', compact("id", "description"));
 }
