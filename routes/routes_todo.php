@@ -71,13 +71,13 @@ function routes_todo_detail($request_variables)
     todo_render_detail($id);
 }
 
-function routes_todo_update($request_variables)
+function routes_todo_update_description($request_variables)
 {
     require_once '../manager/todo_manager.php';
     if (!isset($request_variables['id'])) return;
     if (!isset($request_variables['description'])) return;
     $id = (int)$request_variables['id'];
     $description = (string)$request_variables['description'];
-    todo_update($id, $description);
+    todo_update_description($id, $description);
     redirect_to('todo_list');
 }

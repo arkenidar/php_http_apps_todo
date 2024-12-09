@@ -57,7 +57,7 @@ function todo_render_detail($id)
     echo apply_template('todo/template_todo_detail', $template_variables);
 }
 
-function todo_update($id, $description)
+function todo_update_description($id, $description)
 {
     if (trim($description) == '') {
         todo_remove($id);
