@@ -9,7 +9,7 @@ $GLOBALS['_title_tag_content'] = 'To-Do List. Listing.';
 
 <div>To-Do List.</div>
 <form method="post" action="?r=todo_add">
-    <input name="item" placeholder="list item" autofocus="true">
+    <input name="item" placeholder="list item" autofocus="true" autocomplete="off">
     <input type="submit" value="add">
 </form>
 <?php foreach ($_u('items') as $item) { ?>
