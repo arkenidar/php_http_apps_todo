@@ -2,6 +2,9 @@
 $_wrap_with('template_wrapper');
 ?>
 
+<?php
+$GLOBALS['_title_tag_content'] = 'To-Do List. List item detail.';
+?>
 <title>To-Do List. List item detail.</title>
 
 <div>To-Do List. List item detail.</div>
