@@ -1,3 +1,16 @@
 body {
     background-color: lightgreen;
+    padding: 10px;
+}
+
+.todo_list>a>div>input[type=checkbox] {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.todo_list>a {
+    text-decoration: none;
+    color: initial;
+    display: block;
 }
