@@ -81,3 +81,14 @@ function routes_todo_update_description($request_variables)
     todo_update_description($id, $description);
     redirect_to('todo_list');
 }
+
+function routes_todo_update_state($request_variables)
+{
+    require_once '../manager/todo_manager.php';
+    if (!isset($request_variables['id'])) return;
+    if (!isset($request_variables['state'])) return;
+    $id = (int)$request_variables['id'];
+    $state = (int)$request_variables['state'];
+    todo_update_state($id, $state);
+    redirect_to('todo_list');
+}

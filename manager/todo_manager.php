@@ -65,3 +65,8 @@ function todo_update_description($id, $description)
     }
     query('UPDATE todos SET description=:description WHERE id=:id', compact("id", "description"));
 }
+
+function todo_update_state($id, $state)
+{
+    query('UPDATE todos SET state=:state WHERE id=:id', compact("id", "state"));
+}
