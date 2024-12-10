@@ -13,6 +13,7 @@ $GLOBALS['_title_tag_content'] = 'To-Do List. List item detail.';
     <input name="description" placeholder="list item" value="<?= $_('description') ?>" autofocus="true"
         autocomplete="off">
     <input type="hidden" name="id" value="<?= $_('id') ?>">
-    <input type="submit" value="update">
-    <button onclick="location.href = '?r=todo_remove&id=<?= $_('id') ?>' ">remove</button>
+    <button type="submit">update</button>
+    <button type="submit" onclick="this.form.action='?r=todo_remove'">remove</button>
 </form>
+<button onclick="history.back()">go back</button>
