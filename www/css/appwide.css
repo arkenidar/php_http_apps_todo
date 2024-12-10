@@ -4,8 +4,8 @@ body {
 }
 
 .todo_list>a>div>input[type=checkbox] {
-    width: 30px;
-    height: 30px;
+    width: 3em;
+    height: 3em;
     vertical-align: middle;
 }
 
