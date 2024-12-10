@@ -16,4 +16,5 @@ $GLOBALS['_title_tag_content'] = 'To-Do List. List item detail.';
     <button type="submit">update</button>
     <button type="submit" onclick="this.form.action='?r=todo_remove'">remove</button>
 </form>
+<hr>
 <button onclick="history.back()">go back</button>

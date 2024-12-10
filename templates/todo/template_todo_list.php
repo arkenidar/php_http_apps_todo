@@ -11,6 +11,7 @@ $GLOBALS['_title_tag_content'] = 'To-Do List. Listing.';
     <input name="item" placeholder="list item" autofocus="true" autocomplete="off">
     <button type="submit">add</button>
 </form>
+<hr>
 <div class="todo_list">
     <?php foreach ($_u('items') as $item) { ?>
         <a href="?r=todo_detail&id=<?= $_e($item['id']) ?>">
