@@ -14,3 +14,9 @@ body {
     color: initial;
     display: block;
 }
+
+.todo_list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5em;
+}
