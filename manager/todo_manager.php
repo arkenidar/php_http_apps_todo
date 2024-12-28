@@ -16,7 +16,10 @@ function queryAll($sql, $params = [])
 function query($sql, $params = [], $index = 0)
 {
     $result = queryAll($sql, $params);
-    if (count($result) == 0) return null;
+    if (count($result) == 0) {
+        return null;
+    }
+
     return $result[$index];
 }
 
@@ -38,20 +41,22 @@ function todo_render()
 
 function todo_remove($id)
 {
-    query('DELETE FROM todos WHERE id=:id', [':id' => $id]);
+    query('DELETE FROM todos WHERE id=:id', compact('id'));
 }
 
 function todo_add($description)
 {
     $description = trim($description);
-    if ($description == '') return;
+    if ($description == '') {
+        return;
+    }
 
     query('INSERT INTO todos (description) VALUES (:description)', compact('description'));
 }
 
 function todo_render_detail($id)
 {
-    $template_variables = query('SELECT * FROM todos WHERE id=:id', [':id' => $id]);
+    $template_variables = query('SELECT * FROM todos WHERE id=:id', compact('id'));
 
     require_once '../templates/lib_template.php';
     echo apply_template('todo/template_todo_detail', $template_variables);
@@ -63,10 +68,10 @@ function todo_update_description($id, $description)
         todo_remove($id);
         return;
     }
-    query('UPDATE todos SET description=:description WHERE id=:id', compact("id", "description"));
+    query('UPDATE todos SET description=:description WHERE id=:id', compact('id', 'description'));
 }
 
 function todo_update_state($id, $state)
 {
-    query('UPDATE todos SET state=:state WHERE id=:id', compact("id", "state"));
+    query('UPDATE todos SET state=:state WHERE id=:id', compact('id', 'state'));
 }
