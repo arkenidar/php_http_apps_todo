@@ -1,6 +1,6 @@
 <?php
 
-require_once '../db/pdo_utilities.php';
+require_once '../db/red-bean-orm-use.php';
 
 //-----------------------------------------
 // todo_manager.php
@@ -8,7 +8,7 @@ require_once '../db/pdo_utilities.php';
 
 function todo_list()
 {
-    return queryAll('SELECT * FROM todos');
+    return R::findAll('todos');
 }
 
 function todo_render()
@@ -20,7 +20,8 @@ function todo_render()
 
 function todo_remove($id)
 {
-    query('DELETE FROM todos WHERE id=:id', compact('id'));
+    $todo = R::load('todos', $id);
+    R::trash($todo);
 }
 
 function todo_add($description)
@@ -30,12 +31,14 @@ function todo_add($description)
         return;
     }
 
-    query('INSERT INTO todos (description) VALUES (:description)', compact('description'));
+    $todo              = R::dispense('todos');
+    $todo->description = $description;
+    R::store($todo);
 }
 
 function todo_render_detail($id)
 {
-    $template_variables = query('SELECT * FROM todos WHERE id=:id', compact('id'));
+    $template_variables = R::load('todos', $id);
 
     require_once '../templates/lib_template.php';
     echo apply_template('todo/template_todo_detail', $template_variables);
@@ -47,10 +50,14 @@ function todo_update_description($id, $description)
         todo_remove($id);
         return;
     }
-    query('UPDATE todos SET description=:description WHERE id=:id', compact('id', 'description'));
+    $todo              = R::load('todos', $id);
+    $todo->description = $description;
+    R::store($todo);
 }
 
 function todo_update_state($id, $state)
 {
-    query('UPDATE todos SET state=:state WHERE id=:id', compact('id', 'state'));
+    $todo        = R::load('todos', $id);
+    $todo->state = $state;
+    R::store($todo);
 }
