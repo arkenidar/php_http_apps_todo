@@ -18,13 +18,13 @@ function todo_render()
     echo apply_template('todo/template_todo_list', compact('items'));
 }
 
-function todo_remove($id)
+function todo_remove(int $id)
 {
     $todo = R::load('todos', $id);
     R::trash($todo);
 }
 
-function todo_add($description)
+function todo_add(string $description)
 {
     $description = trim($description);
     if ($description == '') {
@@ -33,10 +33,11 @@ function todo_add($description)
 
     $todo              = R::dispense('todos');
     $todo->description = $description;
+    $todo->state       = 0;
     R::store($todo);
 }
 
-function todo_render_detail($id)
+function todo_render_detail(int $id)
 {
     $template_variables = R::load('todos', $id);
 
@@ -44,7 +45,7 @@ function todo_render_detail($id)
     echo apply_template('todo/template_todo_detail', $template_variables);
 }
 
-function todo_update_description($id, $description)
+function todo_update_description(int $id, string $description)
 {
     if (trim($description) == '') {
         todo_remove($id);
@@ -55,7 +56,7 @@ function todo_update_description($id, $description)
     R::store($todo);
 }
 
-function todo_update_state($id, $state)
+function todo_update_state(int $id, int $state)
 {
     $todo        = R::load('todos', $id);
     $todo->state = $state;
