@@ -20,7 +20,7 @@ function todo_render()
 
 function todo_remove(int $id)
 {
-    $todo = todo_get($id);
+    $todo = R::load('todos', $id);
     R::trash($todo);
 }
 
@@ -39,7 +39,7 @@ function todo_add(string $description)
 
 function todo_render_detail(int $id)
 {
-    $template_variables = todo_get($id);
+    $template_variables = R::load('todos', $id);
 
     require_once '../templates/lib_template.php';
     echo apply_template('todo/template_todo_detail', $template_variables);
@@ -51,19 +51,14 @@ function todo_update_description(int $id, string $description)
         todo_remove($id);
         return;
     }
-    $todo              = todo_get($id);
+    $todo              = R::load('todos', $id);
     $todo->description = $description;
     R::store($todo);
 }
 
 function todo_update_state(int $id, int $state)
 {
-    $todo        = todo_get($id);
+    $todo        = R::load('todos', $id);
     $todo->state = $state;
     R::store($todo);
-}
-
-function todo_get(int $id)
-{
-    return R::load('todos', $id);
 }
