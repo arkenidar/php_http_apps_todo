@@ -32,3 +32,16 @@ function json_response($data)
     header_content_type('application/json');
     echo json_encode($data, JSON_PRETTY_PRINT);
 }
+
+function is_logged_in()
+{
+    return isset($_SESSION['user']);
+}
+
+function require_login()
+{
+    if (!is_logged_in()) {
+        redirect_to('user_login_form');
+        exit();
+    }
+}

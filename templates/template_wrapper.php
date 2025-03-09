@@ -32,6 +32,15 @@
     <hr>
     <a href="https://arkenidar.com/coder.html" target="_blank"> coder : arkenidar </a>
 
+    <hr>
+    <?php
+    if (isset($_SESSION['user'])) {
+        echo 'Logged in as ' . $_SESSION['user'] . ' | ';
+        echo '<a href="router.php?r=user_logout">Logout</a>';
+    } else {
+        echo '<a href="router.php?r=user_login_form">Login</a>';
+    }
+    ?>
 </body>
 
 </html>

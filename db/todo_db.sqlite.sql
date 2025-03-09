@@ -6,6 +6,12 @@ CREATE TABLE `todos` (
     `description` TEXT
 );
 
+CREATE TABLE `users` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `username` TEXT UNIQUE,
+    `password` TEXT
+);
+
 INSERT INTO `todos` VALUES (1, 0, 'task #2');
 
 INSERT INTO `todos` VALUES (2, 0, 'task #3');
