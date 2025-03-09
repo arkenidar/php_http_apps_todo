@@ -1,5 +1,5 @@
 <?php
-function apply_template($template_file, $template_variables, $path_prefix = null)
+function apply_template($template_file, $template_variables = [], $path_prefix = null)
 {
     // template variables
     global $wrap, $_, $_u, $_e, $_wrap_with, $_get_wrapped_content;
