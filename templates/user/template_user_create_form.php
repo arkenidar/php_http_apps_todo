@@ -14,6 +14,9 @@ $GLOBALS['_title_tag_content'] = 'Create User';
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required>
     <br>
+    <label for="confirm_password">Confirm Password:</label>
+    <input type="password" id="confirm_password" name="confirm_password" required>
+    <br>
     <button type="submit">Create User .</button>
 </form>
 <div>
@@ -23,6 +26,13 @@ $GLOBALS['_title_tag_content'] = 'Create User';
         require_once '../db/red-bean-orm-use.php';
         $username = $request['username'];
         $password = password_hash($request['password'], PASSWORD_DEFAULT);
+        $confirm_password = $request['confirm_password'];
+
+        // Check if passwords match
+        if ($request['password'] !== $confirm_password) {
+            echo 'Passwords do not match!';
+            return;
+        }
 
         // Check if user exists
         $user = R::findOne('users', 'username = ?', [$username]);
