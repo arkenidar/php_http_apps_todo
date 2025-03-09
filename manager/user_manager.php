@@ -10,9 +10,9 @@ function user_authenticate($username, $password)
 {
     $user = R::findOne('users', 'username = ?', [$username]);
     if ($user && password_verify($password, $user->password)) {
-        return true;
+        return $user;
     }
-    return false;
+    return null;
 }
 
 function user_render_user_login_form()

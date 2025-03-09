@@ -45,3 +45,12 @@ function require_login()
         exit();
     }
 }
+
+function get_logged_in_user_id()
+{
+    // Assuming the user ID is stored in the session
+    if (isset($_SESSION['user_id'])) {
+        return $_SESSION['user_id'];
+    }
+    return null;
+}

@@ -23,8 +23,10 @@ function routes_user_login_submit($request_variables)
     require_once '../manager/user_manager.php';
     $username = $request_variables['username'];
     $password = $request_variables['password'];
-    if (user_authenticate($username, $password)) {
+    $user = user_authenticate($username, $password);
+    if ($user != null) {
         $_SESSION['user'] = $username;
+        $_SESSION['user_id'] = $user->id;
         redirect_to('');
     } else {
         redirect_to('user_login_form&error=invalid_credentials');
