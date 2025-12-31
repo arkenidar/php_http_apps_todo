@@ -1,4 +1,7 @@
 <?php
+// Composer autoloader
+require_once __DIR__ . '/../vendor/autoload.php';
+
 @session_start();
 try {
     if (isset($_SERVER['REQUEST_URI']))

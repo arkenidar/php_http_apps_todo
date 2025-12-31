@@ -1,0 +1,16 @@
+{
+    "name": "app/php-todo-app",
+    "description": "A simple PHP todo application with user authentication",
+    "type": "project",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
