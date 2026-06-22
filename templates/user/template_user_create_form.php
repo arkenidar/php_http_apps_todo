@@ -34,7 +34,7 @@ $GLOBALS['_title_tag_content'] = 'Create User';
 </form>
 <div>
     <?php
-    function user_create_submit($request)
+    function user_create_submit(array $request): void
     {
         require_once '../db/red-bean-orm-use.php';
         $username = $request['username'];

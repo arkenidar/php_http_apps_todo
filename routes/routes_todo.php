@@ -6,7 +6,7 @@ require_once '../routes/response_utilities.php';
 // routes_todo.php
 //-----------------------------------------
 
-function routes_todo_list($request_variables)
+function routes_todo_list(array $request_variables): void
 {
     require_login();
     require_once '../manager/todo_manager.php';
@@ -14,7 +14,7 @@ function routes_todo_list($request_variables)
     todo_render($user_id);
 }
 
-function routes_todo_list_json_get($request_variables)
+function routes_todo_list_json_get(array $request_variables): void
 {
     require_login();
     require_once '../manager/todo_manager.php';
@@ -22,7 +22,7 @@ function routes_todo_list_json_get($request_variables)
     json_response(todo_list($user_id));
 }
 
-function routes_todo_add($request_variables)
+function routes_todo_add(array $request_variables): void
 {
     require_login();
     require_once '../manager/todo_manager.php';
@@ -31,7 +31,7 @@ function routes_todo_add($request_variables)
     redirect_to('todo_list');
 }
 
-function routes_todo_remove($request_variables)
+function routes_todo_remove(array $request_variables): void
 {
     require_login();
     require_once '../manager/todo_manager.php';
@@ -40,7 +40,7 @@ function routes_todo_remove($request_variables)
     redirect_to('todo_list');
 }
 
-function routes_todo_detail($request_variables)
+function routes_todo_detail(array $request_variables): void
 {
     require_login();
     require_once '../manager/todo_manager.php';
@@ -50,7 +50,7 @@ function routes_todo_detail($request_variables)
     todo_render_detail($id, $user_id);
 }
 
-function routes_todo_update_description($request_variables)
+function routes_todo_update_description(array $request_variables): void
 {
     require_login();
     require_once '../manager/todo_manager.php';
@@ -59,7 +59,7 @@ function routes_todo_update_description($request_variables)
     redirect_to('todo_list');
 }
 
-function routes_todo_update_state($request_variables)
+function routes_todo_update_state(array $request_variables): void
 {
     require_login();
     require_once '../manager/todo_manager.php';
