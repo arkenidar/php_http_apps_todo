@@ -18,6 +18,19 @@ function routes_user_login_form(array $request_variables): void
     user_render_user_login_form();
 }
 
+function routes_user_create_submit(array $request_variables): void
+{
+    require_once '../manager/user_manager.php';
+    $message = user_create(
+        $request_variables['username'],
+        $request_variables['password'],
+        $request_variables['confirm_password']
+    );
+    // re-render the create form with the result message
+    user_render_user_create_form($message);
+}
+
+
 function routes_user_login_submit(array $request_variables): void
 {
     require_once '../manager/user_manager.php';

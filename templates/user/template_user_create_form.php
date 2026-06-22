@@ -1,15 +1,17 @@
 <?php
 // Template helpers injected by apply_template() in lib_template.php
-global $_wrap_with;
+global $_wrap_with, $_;
 $_wrap_with('template_wrapper');
 ?>
+
 
 <?php
 $GLOBALS['_title_tag_content'] = 'Create User';
 ?>
 
 <h2>Create User</h2>
-<form method="post" action="" class="form-horizontal">
+<form method="post" action="router.php?r=user_create_submit" class="form-horizontal">
+
     <div class="form-group">
         <label for="username" class="col-sm-2 control-label">Username:</label>
         <div class="col-sm-10">
@@ -35,37 +37,7 @@ $GLOBALS['_title_tag_content'] = 'Create User';
     </div>
 </form>
 <div>
-    <?php
-    function user_create_submit(array $request): void
-    {
-        require_once '../db/red-bean-orm-use.php';
-        $username = $request['username'];
-        $password = password_hash($request['password'], PASSWORD_DEFAULT);
-        $confirm_password = $request['confirm_password'];
-
-        // Check if passwords match
-        if ($request['password'] !== $confirm_password) {
-            echo 'Passwords do not match!';
-            return;
-        }
-
-        // Check if user exists
-        $user = R::findOne('users', 'username = ?', [$username]);
-        if ($user) {
-            echo 'User already exists!';
-            return;
-        }
-
-        // Create user
-        $user = R::dispense('users');
-        $user->username = $username;
-        $user->password = $password;
-        R::store($user);
-        echo 'User created successfully!';
-    }
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        user_create_submit($_POST);
-    }
-    ?>
+    <?= $_('message') ?>
 </div>
+
 <a href="router.php?r=user_login_form">Login .</a>
