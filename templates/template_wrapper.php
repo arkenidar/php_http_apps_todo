@@ -3,7 +3,11 @@
 
 <head>
 
-    <?php $wrapped_content = $_get_wrapped_content(); ?>
+    <?php
+    // Template helper injected by apply_template() in lib_template.php
+    global $_get_wrapped_content;
+    $wrapped_content = $_get_wrapped_content();
+    ?>
 
     <title> <?= $GLOBALS['_title_tag_content'] ?> </title>
 

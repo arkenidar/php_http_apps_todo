@@ -1,4 +1,6 @@
 <?php
+// Template helpers injected by apply_template() in lib_template.php
+global $_wrap_with, $_u, $_e;
 $_wrap_with('template_wrapper');
 ?>
 
