@@ -24,16 +24,6 @@
 
 <body>
 
-    <a href="https://github.com/arkenidar/php_http_apps_todo" target="_blank">
-        ORIGIN : gh repo clone arkenidar/php_http_apps_todo ( from GitHub ) </a>
-    <hr>
-
-    <?= $wrapped_content ?>
-
-    <hr>
-    <a href="https://arkenidar.com/coder.html" target="_blank"> coder : arkenidar </a>
-
-    <hr>
     <?php
     if (isset($_SESSION['user'])) {
         echo 'Logged in as ' . $_SESSION['user'] . ' | ';
@@ -42,6 +32,20 @@
         echo '<a href="router.php?r=user_login_form">Login</a>';
     }
     ?>
+
+    <hr>
+
+    <?= $wrapped_content ?>
+
+    <hr>
+    <div><a href="https://github.com/arkenidar/php_http_apps_todo" target="_blank">
+            ORIGIN ( from GitHub )</a>: gh repo clone arkenidar/php_http_apps_todo
+    </div>
+    <div> php_http_apps_todo's co-author/coder :
+        <a href="https://arkenidar.com/coder.php" target="_blank">arkenidar</a>
+    </div>
+    <hr>
+
 </body>
 
 </html>
