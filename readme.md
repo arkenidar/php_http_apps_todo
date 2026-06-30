@@ -11,6 +11,9 @@
   `session_start()` fails silently and login just bounces back to the form. An
   absolute path is required because, while serving a request, PHP's working
   directory is `www/`, so a relative path would not resolve to `tmp/sessions/`.)
+- On Termux (Android), the default `session.save_path` is writable so it can be
+  omitted, but add `-d opcache.enable=0` (OPcache can cause issues there):
+  `php -S localhost:8080 -t www -d opcache.enable=0`
 
 ## example installations.
 - <https://arkenidar.com/app/php_http_apps_todo/?r=todo_list>
