@@ -16,5 +16,5 @@
   `php -S localhost:8080 -t www -d opcache.enable=0`
 
 ## example installations.
-- <https://arkenidar.com/app/php_http_apps_todo/?r=todo_list>
+- <https://arkenidar.com/apps/php_http_apps_todo/?r=todo_list>
 - <http://localhost:8080/?r=todo_list>
