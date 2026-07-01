@@ -1,5 +1,7 @@
 <?php
 
+global $routes;
+
 // file for routes
 require_once '../routes/routes_todo.php';
 
