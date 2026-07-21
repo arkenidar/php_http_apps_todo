@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>API Reference — php_http_apps_todo</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <a href="index.html">php_http_apps_todo</a>
+        </div>
+        <nav>
+          <ul class="sidebar-nav">
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="api-reference.html" class="active">API Reference</a></li>
+            <li><a href="database.html">Database</a></li>
+          </ul>
+        </nav>
+        <hr />
+        <p style="font-size: 0.8rem; color: var(--color-text-muted)">
+          <em>On this page:</em>
+        </p>
+        <ul class="sidebar-nav">
+          <li><a href="#todo-routes">Todo Routes</a></li>
+          <li><a href="#user-routes">User Routes</a></li>
+          <li><a href="#default-route">Default Route</a></li>
+        </ul>
+      </aside>
+
+      <main class="content">
+
+        <h1>API / Route Reference</h1>
+
+        <p>
+          All routes are accessed via the <code>?r=<route></code> query
+          parameter on the router (<code>www/router.php</code>). The
+          <code>$_REQUEST</code> superglobal (covering both GET and POST) is
+          passed to each handler as <code>$request_variables</code>.
+        </p>
+
+        <h2 id="todo-routes">Todo Routes</h2>
+
+        <hr />
+
+        <h3 id="todo_list">todo_list</h3>
+
+        <p>Renders the HTML todo list page for the authenticated user.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>Required</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-get">GET</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>HTML</td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td>None</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Example:</strong> <code>?r=todo_list</code></p>
+
+        <hr />
+
+        <h3 id="todo_list_json_get">todo_list_json_get</h3>
+
+        <p>Returns the user's todo items as a JSON array.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>Required</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-get">GET</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td><code>application/json</code></td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td>None</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Example:</strong> <code>?r=todo_list_json_get</code></p>
+
+        <p><strong>Response shape:</strong></p>
+
+        <pre><code>[
+  {
+    "id": 1,
+    "description": "Buy groceries",
+    "state": 0,
+    "user_id": 1
+  }
+]</code></pre>
+
+        <hr />
+
+        <h3 id="todo_add">todo_add</h3>
+
+        <p>Adds a new todo item for the authenticated user.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>Required</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-post">POST</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>Redirect to <code>todo_list</code></td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td><code>item</code> (string) — the description</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Example POST:</strong> <code>?r=todo_add</code> with body
+          <code>item=Buy+groceries</code>
+        </p>
+
+        <blockquote>
+          <p>Empty or whitespace-only descriptions are silently ignored.</p>
+        </blockquote>
+
+        <hr />
+
+        <h3 id="todo_remove">todo_remove</h3>
+
+        <p>Deletes a todo item belonging to the authenticated user.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>Required</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td>GET/POST</td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>Redirect to <code>todo_list</code></td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td><code>id</code> (int) — the todo ID</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Example:</strong> <code>?r=todo_remove&id=1</code></p>
+
+        <blockquote>
+          <p>
+            If the todo does not belong to the authenticated user, the request
+            is silently ignored (no error shown).
+          </p>
+        </blockquote>
+
+        <hr />
+
+        <h3 id="todo_detail">todo_detail</h3>
+
+        <p>Renders the detail/edit view for a single todo item.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>Required</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-get">GET</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>HTML</td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td><code>id</code> (int) — the todo ID</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Example:</strong> <code>?r=todo_detail&id=1</code></p>
+
+        <blockquote>
+          <p>
+            If the todo does not belong to the authenticated user, the request
+            is silently ignored.
+          </p>
+        </blockquote>
+
+        <hr />
+
+        <h3 id="todo_update_description">todo_update_description</h3>
+
+        <p>Updates the description of a todo item.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>Required</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-post">POST</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>Redirect to <code>todo_list</code></td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td><code>id</code> (int), <code>description</code> (string)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Example POST:</strong>
+          <code>?r=todo_update_description</code> with body
+          <code>id=1&description=Updated+task</code>
+        </p>
+
+        <blockquote>
+          <p>
+            If the description is empty or whitespace-only, the todo is
+            <strong>deleted</strong> instead of updated.<br />
+            If the todo does not belong to the authenticated user, the request
+            is silently ignored.
+          </p>
+        </blockquote>
+
+        <hr />
+
+        <h3 id="todo_update_state">todo_update_state</h3>
+
+        <p>Toggles the checked/done state of a todo item.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>Required</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-post">POST</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>Redirect to <code>todo_list</code></td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td>
+                <code>id</code> (int),
+                <code>state</code> (int: <code>0</code> = unchecked,
+                <code>1</code> = checked)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Example POST:</strong> <code>?r=todo_update_state</code> with
+          body <code>id=1&state=1</code>
+        </p>
+
+        <blockquote>
+          <p>
+            In the UI, this is called via <code>fetch()</code> (AJAX) so the
+            page does not reload.<br />
+            If the todo does not belong to the authenticated user, the request
+            is silently ignored.
+          </p>
+        </blockquote>
+
+        <h2 id="user-routes">User Routes</h2>
+
+        <hr />
+
+        <h3 id="user_create_form">user_create_form</h3>
+
+        <p>Renders the user registration form.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>None (public)</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-get">GET</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>HTML</td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td>None</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Example:</strong> <code>?r=user_create_form</code></p>
+
+        <hr />
+
+        <h3 id="user_create_submit">user_create_submit</h3>
+
+        <p>Processes user registration.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>None (public)</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-post">POST</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>HTML (re-renders form with success/error)</td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td>
+                <code>username</code> (string), <code>password</code> (string),
+                <code>confirm_password</code> (string)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Example POST:</strong> <code>?r=user_create_submit</code> with
+          body
+          <code>username=jdoe&password=secret&confirm_password=secret</code>
+        </p>
+
+        <p><strong>Possible responses:</strong></p>
+
+        <ul>
+          <li>
+            <code>"Passwords do not match!"</code> — <code>password</code> ≠
+            <code>confirm_password</code>
+          </li>
+          <li>
+            <code>"User already exists!"</code> — username is taken
+          </li>
+          <li>
+            <code>"User created successfully!"</code> — account created
+          </li>
+        </ul>
+
+        <blockquote>
+          <p>
+            Passwords are hashed with <code>password_hash()</code> using
+            <code>PASSWORD_DEFAULT</code> (bcrypt).
+          </p>
+        </blockquote>
+
+        <hr />
+
+        <h3 id="user_login_form">user_login_form</h3>
+
+        <p>Renders the login form.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>None (public)</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-get">GET</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>HTML</td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td>
+                Optional: <code>error=invalid_credentials</code> displays an
+                error
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Example:</strong> <code>?r=user_login_form</code></p>
+
+        <hr />
+
+        <h3 id="user_login_submit">user_login_submit</h3>
+
+        <p>Processes login.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>None (public)</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-post">POST</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>
+                Redirect to <code>todo_list</code> (success) or
+                <code>user_login_form?error=invalid_credentials</code> (failure)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td>
+                <code>username</code> (string), <code>password</code> (string)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Example POST:</strong> <code>?r=user_login_submit</code> with
+          body <code>username=jdoe&password=secret</code>
+        </p>
+
+        <blockquote>
+          <p>
+            On success, <code>$_SESSION['user']</code> and
+            <code>$_SESSION['user_id']</code> are set.
+          </p>
+        </blockquote>
+
+        <hr />
+
+        <h3 id="user_logout">user_logout</h3>
+
+        <p>Destroys the session and redirects to the login form.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>None (destroys existing session)</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td>GET/POST</td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>Redirect to <code>user_login_form</code></td>
+            </tr>
+            <tr>
+              <td><strong>Parameters</strong></td>
+              <td>None</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Example:</strong> <code>?r=user_logout</code></p>
+
+        <h2 id="default-route">Default Route</h2>
+
+        <hr />
+
+        <h3><code>''</code> (empty / home)</h3>
+
+        <p>Redirects to <code>todo_list</code>.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auth</strong></td>
+              <td>Required (redirects through <code>todo_list</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Method</strong></td>
+              <td><span class="badge badge-get">GET</span></td>
+            </tr>
+            <tr>
+              <td><strong>Response</strong></td>
+              <td>Redirect to <code>todo_list</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Example:</strong> <code>?r=</code></p>
+
+      </main>
+    </div>
+  </body>
+</html>

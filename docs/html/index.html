@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>php_http_apps_todo — Documentation</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <a href="index.html">php_http_apps_todo</a>
+        </div>
+        <nav>
+          <ul class="sidebar-nav">
+            <li><a href="index.html" class="active">Overview</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="database.html">Database</a></li>
+          </ul>
+        </nav>
+        <hr />
+        <p class="text-muted" style="font-size: 0.8rem">
+          <a
+            href="https://github.com/arkenidar/php_http_apps_todo"
+            target="_blank"
+            rel="noopener"
+            >GitHub Repository</a
+          >
+        </p>
+      </aside>
+
+      <!-- Main content -->
+      <main class="content">
+        <h1>php_http_apps_todo</h1>
+
+        <p>
+          A multi-user To-Do List web application built with a custom
+          lightweight PHP framework ("php_http" foundations).
+        </p>
+
+        <h2>Features</h2>
+
+        <ul>
+          <li>
+            <strong>Multi-User Support</strong> — Each user has their own
+            private list of todos.
+          </li>
+          <li>
+            <strong>User Authentication</strong> — Registration and login with
+            bcrypt-hashed passwords.
+          </li>
+          <li>
+            <strong>CRUD Operations</strong> — Create, read, update, and delete
+            todo items.
+          </li>
+          <li>
+            <strong>State Toggling</strong> — Mark items as done/undone via
+            checkbox (AJAX-powered, no page reload).
+          </li>
+          <li>
+            <strong>Detail View</strong> — View and edit a single todo item's
+            description.
+          </li>
+          <li>
+            <strong>JSON API</strong> — Programmatic access to the todo list via
+            a JSON endpoint.
+          </li>
+        </ul>
+
+        <h2>Tech Stack</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Technology</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Language</td>
+              <td>PHP 7.4+</td>
+            </tr>
+            <tr>
+              <td>Database</td>
+              <td>SQLite (primary), PostgreSQL (optional)</td>
+            </tr>
+            <tr>
+              <td>ORM</td>
+              <td>
+                <a href="https://redbeanphp.com/" target="_blank" rel="noopener"
+                  >RedBeanPHP</a
+                >
+                (vendored)
+              </td>
+            </tr>
+            <tr>
+              <td>Frontend CSS</td>
+              <td>Bootstrap 5.1 (CDN) + custom <code>appwide.css</code></td>
+            </tr>
+            <tr>
+              <td>Templating</td>
+              <td>Custom PHP output-buffering engine</td>
+            </tr>
+            <tr>
+              <td>Routing</td>
+              <td>Custom query-string-based dispatcher</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Quick Start</h2>
+
+        <h3>Prerequisites</h3>
+
+        <ul>
+          <li>PHP 7.4 or later</li>
+          <li>SQLite3 extension for PHP (<code>php-sqlite3</code>)</li>
+        </ul>
+
+        <h3>Installation (Ubuntu)</h3>
+
+        <pre><code>sudo apt install php php-sqlite3</code></pre>
+
+        <h3>Run the Development Server</h3>
+
+        <p>From the project root:</p>
+
+        <pre><code>php -S localhost:8080 -t www -d session.save_path="$PWD/tmp/sessions"</code></pre>
+
+        <p>
+          Then open:
+          <a href="http://localhost:8080/?r=todo_list"
+            >http://localhost:8080/?r=todo_list</a
+          >
+        </p>
+
+        <blockquote>
+          <p>
+            <strong>Note on sessions:</strong> The
+            <code>-d session.save_path=...</code> flag points PHP sessions at
+            the project-local <code>tmp/sessions/</code> directory. Without it,
+            the system default <code>session.save_path</code> (often
+            <code>/var/lib/php/sessions</code>) may be unwritable, causing
+            <code>session_start()</code> to fail silently and login to bounce
+            back to the form. An absolute path is required because PHP's working
+            directory during a request is <code>www/</code>.
+          </p>
+        </blockquote>
+
+        <h3>Termux (Android)</h3>
+
+        <p>
+          On Termux, the default <code>session.save_path</code> is writable, so
+          it can be omitted. Add <code>-d opcache.enable=0</code> to avoid
+          OPcache-related issues:
+        </p>
+
+        <pre><code>php -S localhost:8080 -t www -d opcache.enable=0</code></pre>
+
+        <h2>Directory Structure</h2>
+
+        <pre><code>php_http_apps_todo/
+├── db/                     # Database layer
+│   ├── rb-sqlite.php       # Vendored RedBeanPHP for SQLite
+│   ├── red-bean-orm-use.php # ORM setup (connection)
+│   ├── pdo.php             # Raw PDO utilities
+│   ├── pdo_utilities.php   # PDO helper functions
+│   ├── mysql.sql           # Alternative MySQL schema
+│   ├── todo_db.sqlite      # SQLite database file
+│   └── pgsql/              # PostgreSQL test scripts
+├── manager/                # Business logic layer
+│   ├── todo_manager.php    # Todo CRUD operations
+│   └── user_manager.php    # User authentication & creation
+├── routes/                 # Routing layer
+│   ├── _router.php         # Route registry
+│   ├── routes_todo.php     # Todo route handlers
+│   ├── routes_user.php     # User route handlers
+│   └── response_utilities.php # Redirect, JSON, auth helpers
+├── templates/              # Presentation layer
+│   ├── lib_template.php    # Custom template engine
+│   ├── template_wrapper.php # HTML shell (Bootstrap, nav, footer)
+│   ├── todo/               # Todo templates
+│   └── user/               # User templates (login, register)
+├── www/                    # Web root (public)
+│   ├── index.php           # Entry point → redirects to router.php
+│   ├── router.php          # Request dispatcher
+│   └── css/
+│       └── appwide.css     # Application-wide styles
+├── readme.md               # Original readme
+└── LICENSE.txt</code></pre>
+
+        <h2>Live Demos</h2>
+
+        <ul>
+          <li>
+            Production:
+            <a
+              href="https://arkenidar.com/apps/php_http_apps_todo/?r=todo_list"
+              target="_blank"
+              rel="noopener"
+              >arkenidar.com/apps/php_http_apps_todo</a
+            >
+          </li>
+          <li>
+            Local:
+            <a href="http://localhost:8080/?r=todo_list"
+              >localhost:8080/?r=todo_list</a
+            >
+          </li>
+        </ul>
+
+        <h2>Further Reading</h2>
+
+        <ul>
+          <li>
+            <a href="architecture.html">Architecture</a> — Request flow,
+            routing, template engine
+          </li>
+          <li>
+            <a href="api-reference.html">API Reference</a> — All routes with
+            parameters and examples
+          </li>
+          <li>
+            <a href="database.html">Database</a> — Schema, ORM usage, password
+            storage
+          </li>
+        </ul>
+
+        <hr />
+
+        <p class="text-muted">
+          Source:
+          <a
+            href="https://github.com/arkenidar/php_http_apps_todo"
+            target="_blank"
+            rel="noopener"
+            >github.com/arkenidar/php_http_apps_todo</a
+          >
+        </p>
+      </main>
+    </div>
+  </body>
+</html>

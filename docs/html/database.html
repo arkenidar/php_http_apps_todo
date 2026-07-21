@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Database — php_http_apps_todo</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <a href="index.html">php_http_apps_todo</a>
+        </div>
+        <nav>
+          <ul class="sidebar-nav">
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="database.html" class="active">Database</a></li>
+          </ul>
+        </nav>
+        <hr />
+        <p style="font-size: 0.8rem; color: var(--color-text-muted)">
+          <em>On this page:</em>
+        </p>
+        <ul class="sidebar-nav">
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#orm-setup">ORM Setup</a></li>
+          <li><a href="#schema">Schema</a></li>
+          <li><a href="#seed-data">Seed Data</a></li>
+          <li><a href="#orm-usage">ORM Usage Patterns</a></li>
+          <li><a href="#pdo-utilities">Raw PDO Utilities</a></li>
+          <li><a href="#data-isolation">Data Isolation</a></li>
+          <li><a href="#password-storage">Password Storage</a></li>
+        </ul>
+      </aside>
+
+      <main class="content">
+        <h1>Database</h1>
+
+        <h2 id="overview">Overview</h2>
+
+        <p>
+          The application uses <strong>SQLite</strong> as its primary database,
+          accessed through the
+          <a href="https://redbeanphp.com/" target="_blank" rel="noopener"
+            >RedBeanPHP</a
+          >
+          ORM. PostgreSQL and MySQL are partially supported as alternatives.
+        </p>
+
+        <h2 id="orm-setup">ORM Setup</h2>
+
+        <p>
+          The database connection is established in
+          <code>db/red-bean-orm-use.php</code>:
+        </p>
+
+        <pre><code>require_once $current_directory . 'rb-sqlite.php';
+R::setup('sqlite:' . $current_directory . 'todo_db.sqlite');</code></pre>
+
+        <p>
+          RedBeanPHP is vendored as <code>db/rb-sqlite.php</code> — no Composer
+          or external package installation is required.
+        </p>
+
+        <h3>PostgreSQL Alternative</h3>
+
+        <p>A commented-out line provides PostgreSQL support:</p>
+
+        <pre><code>// R::setup('pgsql:host=127.0.0.1;port=5432;dbname=database1;', 'postgres', 'password');</code></pre>
+
+        <p>
+          Test scripts for PostgreSQL are available in <code>db/pgsql/</code>.
+        </p>
+
+        <h2 id="schema">Schema</h2>
+
+        <p>
+          The SQLite DDL (from <code>db/todo_db.sqlite.sql</code>) defines two
+          tables:
+        </p>
+
+        <h3>todos</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Column</th>
+              <th>Type</th>
+              <th>Constraints</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>id</code></td>
+              <td>INTEGER</td>
+              <td>PRIMARY KEY AUTOINCREMENT</td>
+              <td>Unique identifier</td>
+            </tr>
+            <tr>
+              <td><code>description</code></td>
+              <td>TEXT</td>
+              <td></td>
+              <td>The todo item text</td>
+            </tr>
+            <tr>
+              <td><code>state</code></td>
+              <td>INTEGER</td>
+              <td>DEFAULT 0</td>
+              <td><code>0</code> = unchecked, <code>1</code> = checked</td>
+            </tr>
+            <tr>
+              <td><code>user_id</code></td>
+              <td>INTEGER</td>
+              <td></td>
+              <td>Foreign key to <code>users.id</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>users</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Column</th>
+              <th>Type</th>
+              <th>Constraints</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>id</code></td>
+              <td>INTEGER</td>
+              <td>PRIMARY KEY AUTOINCREMENT</td>
+              <td>Unique identifier</td>
+            </tr>
+            <tr>
+              <td><code>username</code></td>
+              <td>TEXT</td>
+              <td>UNIQUE</td>
+              <td>Login name</td>
+            </tr>
+            <tr>
+              <td><code>password</code></td>
+              <td>TEXT</td>
+              <td></td>
+              <td>bcrypt hash of the password</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>MySQL Schema</h3>
+
+        <p>
+          An alternative MySQL schema is provided in
+          <code>db/mysql.sql</code>:
+        </p>
+
+        <pre><code>CREATE TABLE todos (
+    id SERIAL,
+    description TEXT,
+    state INT DEFAULT 0,
+    user_id INT
+);</code></pre>
+
+        <blockquote>
+          <p>
+            <strong>Note:</strong> The MySQL schema only defines the
+            <code>todos</code> table. For full functionality, a
+            <code>users</code> table must be created separately.
+          </p>
+        </blockquote>
+
+        <h2 id="seed-data">Seed Data</h2>
+
+        <p>
+          The SQLite database (<code>db/todo_db.sqlite</code>) is pre-populated
+          with two sample todo items from the schema dump:
+        </p>
+
+        <pre><code>INSERT INTO `todos` VALUES (1, 'task #2', 0);
+INSERT INTO `todos` VALUES (2, 'task #3', 0);</code></pre>
+
+        <p>
+          These are stored without a <code>user_id</code> (NULL), meaning they
+          belong to no user and will not appear in anyone's list after login.
+        </p>
+
+        <h2 id="orm-usage">ORM Usage Patterns</h2>
+
+        <p>All database interaction goes through RedBeanPHP's fluid API:</p>
+
+        <h3>Querying (Reading)</h3>
+
+        <pre><code>// Find all todos for a user
+$todos = R::findAll('todos', 'user_id = ?', [$user_id]);
+
+// Find a single user by username
+$user = R::findOne('users', 'username = ?', [$username]);
+
+// Load a single bean by ID
+$todo = R::load('todos', $id);</code></pre>
+
+        <h3>Creating</h3>
+
+        <pre><code>$todo = R::dispense('todos');
+$todo->description = 'New task';
+$todo->state = 0;
+$todo->user_id = $user_id;
+R::store($todo);</code></pre>
+
+        <h3>Updating</h3>
+
+        <pre><code>$todo = R::load('todos', $id);
+$todo->description = 'Updated description';
+R::store($todo);</code></pre>
+
+        <h3>Deleting</h3>
+
+        <pre><code>$todo = R::load('todos', $id);
+R::trash($todo);</code></pre>
+
+        <h2 id="pdo-utilities">Raw PDO Utilities</h2>
+
+        <p>
+          The <code>db/pdo.php</code> and <code>db/pdo_utilities.php</code>
+          files provide lower-level PDO helper functions for direct SQL access,
+          though they are not used by the main application flow. These can serve
+          as a starting point for queries that go beyond RedBeanPHP's
+          capabilities.
+        </p>
+
+        <h2 id="data-isolation">Data Isolation</h2>
+
+        <p>
+          The application enforces <strong>user-scoped data access</strong> at
+          the manager level. Every todo query includes a <code>user_id</code>
+          filter, and every write operation verifies ownership:
+        </p>
+
+        <pre><code>$todo = R::load('todos', $id);
+if ((int) $todo->user_id !== $user_id) {
+    return; // Unauthorized
+}</code></pre>
+
+        <p>
+          There are no foreign key constraints defined at the database level
+          between <code>todos.user_id</code> and <code>users.id</code>.
+        </p>
+
+        <h2 id="password-storage">Password Storage</h2>
+
+        <p>
+          User passwords are <strong>never stored in plain text</strong>. They
+          are hashed using PHP's <code>password_hash()</code> with the
+          <code>PASSWORD_DEFAULT</code> algorithm (currently bcrypt):
+        </p>
+
+        <pre><code>$user->password = password_hash($password, PASSWORD_DEFAULT);</code></pre>
+
+        <p>Verification uses <code>password_verify()</code>:</p>
+
+        <pre><code>if ($user && password_verify($password, $user->password)) {
+    return $user;
+}</code></pre>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Architecture — php_http_apps_todo</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <a href="index.html">php_http_apps_todo</a>
+        </div>
+        <nav>
+          <ul class="sidebar-nav">
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="architecture.html" class="active">Architecture</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="database.html">Database</a></li>
+          </ul>
+        </nav>
+        <hr />
+        <p style="font-size: 0.8rem; color: var(--color-text-muted)">
+          <em>On this page:</em>
+        </p>
+        <ul class="sidebar-nav">
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#request-flow">Request Flow</a></li>
+          <li><a href="#response-utilities">Response Utilities</a></li>
+          <li><a href="#authentication">Authentication & Authorization</a></li>
+          <li><a href="#template-engine">Template Engine</a></li>
+          <li><a href="#key-design-decisions">Key Design Decisions</a></li>
+        </ul>
+      </aside>
+
+      <main class="content">
+
+        <h1>Architecture</h1>
+
+        <h2 id="overview">Overview</h2>
+
+        <p>
+          <code>php_http_apps_todo</code> follows a lightweight, framework-free
+          Model-View-Controller (MVC) pattern. The application is structured
+          into four layers:
+        </p>
+
+        <pre><code>Request → www/router.php → routes/ → manager/ → db/
+                                    → templates/</code></pre>
+
+        <h2 id="request-flow">Request Flow</h2>
+
+        <h3>1. Entry Point</h3>
+
+        <p><code>www/index.php</code> simply redirects to <code>www/router.php</code>:</p>
+
+        <pre><code><?php header('Location: router.php');</code></pre>
+
+        <h3>2. Router (<code>www/router.php</code>)</h3>
+
+        <p>
+          The router starts a PHP session and loads the route registry. It
+          dispatches based on the <code>r</code> query parameter:
+        </p>
+
+        <pre><code>@session_start();
+$route = (string) @$_REQUEST['r'];</code></pre>
+
+        <p>Two dispatch mechanisms exist:</p>
+
+        <ol>
+          <li>
+            <strong>Explicit route map</strong> — Routes registered in the
+            <code>$routes</code> array (from <code>routes/_router.php</code>).
+          </li>
+          <li>
+            <strong>Function autodiscovery</strong> — Falls back to
+            <code>function_exists("routes_$route")</code>, so naming a function
+            <code>routes_foo_bar</code> automatically creates the route
+            <code>foo_bar</code>.
+          </li>
+        </ol>
+
+        <p>If no match is found, <code>RouteNotFound</code> is echoed.</p>
+
+        <h3>3. Route Registry (<code>routes/_router.php</code>)</h3>
+
+        <p>
+          Loads route handler files and defines the default (<code>''</code>)
+          route:
+        </p>
+
+        <pre><code>require_once '../routes/routes_todo.php';
+require_once '../routes/routes_user.php';
+
+$routes[''] = function ($request_variables) {
+    redirect_to('todo_list');
+};</code></pre>
+
+        <p>
+          The explicit <code>$routes</code> array is currently unused (no keys
+          are set beyond <code>''</code>) — all other routes rely on the
+          autodiscovery fallback.
+        </p>
+
+        <h3>4. Route Handlers</h3>
+
+        <p>
+          Todo routes are in <code>routes/routes_todo.php</code>, user routes in
+          <code>routes/routes_user.php</code>. Each handler function:
+        </p>
+
+        <ol>
+          <li>
+            Optionally calls <code>require_login()</code> to enforce
+            authentication.
+          </li>
+          <li>Loads the appropriate manager.</li>
+          <li>Delegates to manager functions for business logic.</li>
+          <li>
+            Returns a response (HTML via template, JSON, or redirect).
+          </li>
+        </ol>
+
+        <h3>5. Managers (<code>manager/</code>)</h3>
+
+        <p>Two files handle all business logic:</p>
+
+        <ul>
+          <li>
+            <strong><code>todo_manager.php</code></strong> — CRUD operations on the
+            <code>todos</code> bean, enforcing user ownership.
+          </li>
+          <li>
+            <strong><code>user_manager.php</code></strong> — User registration (with
+            password hashing) and authentication.
+          </li>
+        </ul>
+
+        <p>
+          Both depend on <code>db/red-bean-orm-use.php</code> for RedBean ORM
+          access.
+        </p>
+
+        <h3>6. Templates (<code>templates/</code>)</h3>
+
+        <p>
+          The custom template engine in <code>lib_template.php</code> provides:
+        </p>
+
+        <ul>
+          <li>Variable injection with HTML escaping</li>
+          <li>Template wrapping/nesting via <code>$_wrap_with()</code></li>
+          <li>Output buffering for clean template rendering</li>
+        </ul>
+
+        <h2 id="response-utilities">Response Utilities (<code>routes/response_utilities.php</code>)</h2>
+
+        <p>Shared helper functions for all route handlers:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Function</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>header_location()</code></td>
+              <td>Send <code>Location:</code> header</td>
+            </tr>
+            <tr>
+              <td><code>redirect_to()</code></td>
+              <td>Redirect to a named route (<code>?r=<name></code>)</td>
+            </tr>
+            <tr>
+              <td><code>header_content_type()</code></td>
+              <td>Set <code>Content-Type</code> header</td>
+            </tr>
+            <tr>
+              <td><code>json_response()</code></td>
+              <td>Output JSON with <code>application/json</code> content type</td>
+            </tr>
+            <tr>
+              <td><code>is_logged_in()</code></td>
+              <td>Check if <code>$_SESSION['user']</code> is set</td>
+            </tr>
+            <tr>
+              <td><code>require_login()</code></td>
+              <td>Redirect to login form if not authenticated, then <code>exit</code></td>
+            </tr>
+            <tr>
+              <td><code>get_logged_in_user_id()</code></td>
+              <td>Return the logged-in user's ID from session</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2 id="authentication">Authentication & Authorization</h2>
+
+        <ul>
+          <li>
+            <strong>Authentication</strong>: Session-based. Login stores
+            <code>username</code> and <code>user_id</code> in
+            <code>$_SESSION</code>. Logout calls <code>session_destroy()</code>.
+          </li>
+          <li>
+            <strong>Authorization</strong>: Every todo operation checks
+            <code>$todo->user_id === $user_id</code> before allowing
+            modification. This is enforced in the manager layer, not at the
+            route level.
+          </li>
+        </ul>
+
+        <h2 id="template-engine">Template Engine (<code>lib_template.php</code>)</h2>
+
+        <p>The <code>apply_template()</code> function:</p>
+
+        <ol>
+          <li>Accepts a template file name and optional variables.</li>
+          <li>
+            Injects helper closures (<code>$_</code>, <code>$_u</code>,
+            <code>$_e</code>, <code>$_wrap_with</code>,
+            <code>$_get_wrapped_content</code>) into the template's global
+            scope.
+          </li>
+          <li>
+            Uses output buffering (<code>ob_start()</code> /
+            <code>ob_get_contents()</code>) to capture rendered HTML.
+          </li>
+          <li>
+            Supports nested wrapping: a template can call
+            <code>$_wrap_with('wrapper_name')</code> to wrap itself inside
+            another template. The wrapper receives the inner content via
+            <code>$_get_wrapped_content()</code>.
+          </li>
+        </ol>
+
+        <h3>Template Helpers</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Helper</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>$_('key')</code></td>
+              <td>Get and HTML-escape a template variable</td>
+            </tr>
+            <tr>
+              <td><code>$_u('key')</code></td>
+              <td>Get a template variable without escaping</td>
+            </tr>
+            <tr>
+              <td><code>$_e($value)</code></td>
+              <td>HTML-escape a raw value</td>
+            </tr>
+            <tr>
+              <td><code>$_wrap_with('template')</code></td>
+              <td>Wrap current output in another template</td>
+            </tr>
+            <tr>
+              <td><code>$_get_wrapped_content()</code></td>
+              <td>Retrieve the wrapped inner content (used by wrapper)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Wrapper Template (<code>template_wrapper.php</code>)</h3>
+
+        <p>Provides the HTML document shell:</p>
+
+        <ul>
+          <li>Bootstrap 5.1 CSS & JS (CDN)</li>
+          <li><code>appwide.css</code></li>
+          <li>Responsive viewport meta tag</li>
+          <li>Navigation bar with login/logout links</li>
+          <li>Footer with GitHub link and author credit</li>
+        </ul>
+
+        <h2 id="database-layer">Database Layer</h2>
+
+        <p>
+          See <a href="database.html">Database</a> for schema details. The
+          application uses RedBeanPHP ORM with SQLite by default, with
+          PostgreSQL available as an alternative (commented out in
+          <code>db/red-bean-orm-use.php</code>).
+        </p>
+
+        <h2 id="key-design-decisions">Key Design Decisions</h2>
+
+        <ul>
+          <li>
+            <strong>No Composer</strong> — RedBeanPHP is vendored directly as a
+            single file (<code>db/rb-sqlite.php</code>).
+          </li>
+          <li>
+            <strong>Procedural style</strong> — All code uses functions, not
+            classes. This keeps the codebase accessible.
+          </li>
+          <li>
+            <strong>Query-string routing</strong> — No URL rewriting required.
+            Works out-of-the-box with PHP's built-in server.
+          </li>
+          <li>
+            <strong>Autodiscovery routing</strong> — Adding a new route is as
+            simple as defining a <code>routes_<name></code> function.
+          </li>
+          <li>
+            <strong>Owner-scoped queries</strong> — All todo queries filter by
+            <code>user_id</code> to ensure data isolation between users.
+          </li>
+        </ul>
+
+      </main>
+    </div>
+  </body>
+</html>
