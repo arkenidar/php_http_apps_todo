@@ -1,10 +1,13 @@
 <?php
-@session_start();
+session_save_path(__DIR__ . '/../tmp/sessions');
+session_start();
 try {
     if (isset($_SERVER['REQUEST_URI']))
         return serve_request($_REQUEST);
 } catch (Exception $e) {
     echo 'exception:' . $e->getMessage();
+} finally {
+    session_write_close();
 }
 function serve_request($request_variables = [])
 {
