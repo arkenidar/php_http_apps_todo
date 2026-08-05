@@ -39,8 +39,10 @@
 
     <hr>
     <div><a href="https://github.com/arkenidar/php_http_apps_todo" target="_blank">
-            ORIGIN ( from GitHub )</a>: gh repo clone arkenidar/php_http_apps_todo
+            ORIGIN ( from GitHub )</a>:<br>
+gh repo clone arkenidar/php_http_apps_todo
     </div>
+    <hr>
     <div> php_http_apps_todo's co-author/coder :
         <a href="https://arkenidar.com/coder.php" target="_blank">arkenidar</a>
     </div>
