@@ -29,7 +29,7 @@ function serve_request($request_variables = [])
     $route = (string) @$request_variables['r'];
 
     // avoid code injection (security)
-    $route = htmlspecialchars($route, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    sanitise_text($route);
 
     if (isset($routes[$route])) {
         // route found

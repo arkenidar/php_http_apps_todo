@@ -1,5 +1,10 @@
 <?php
 
+function sanitise_text(&$text):void {
+    // avoid code injection (security)
+    $text = htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
 global $routes;
 
 // file for routes
@@ -15,6 +20,10 @@ $routes[''] = function ($request_variables) {
 
 $routes['RouteNotFound'] = function ($request_variables) {
     $route = $request_variables['RouteNotFound'];
+
+    // avoid code injection (security)
+    sanitise_text($route);
+
     // you can also respond with a template etc like normal
     echo "RouteNotFound:$route";
 };
