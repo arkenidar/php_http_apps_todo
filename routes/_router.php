@@ -21,5 +21,5 @@ $routes[''] = function ($request_variables) {
 $routes['@RouteNotFound'] = function ($request_variables) {
     $route = $request_variables['@extra']['wrong_route'];
     // you can also respond with a template etc like normal
-    echo "RouteNotFound: $route";
+    echo "RouteNotFound";
 };
