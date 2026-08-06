@@ -23,10 +23,25 @@ try {
 
 function serve_request($request_variables = [])
 {
+    // @extra is a special key in the request_variables array
+    // that can be used to store additional information about the request.
+    // It is an associative array that can contain any number of key-value pairs,
+    // and it is intended to be used by the application
+    // to store information that is not part of the standard request parameters.
+    // Setting it empty also prevents code injection (security)
+    $request_variables['@extra'] = [];
+
     $routes = [];
     require '../routes/_router.php';
 
     $route = (string) @$request_variables['r'];
+    
+    if($route[0]==='@') {
+        // route starting with @ is reserved for internal use
+        http_response_code(500);
+        echo "reserved route: $route";
+        return;
+    }
 
     // avoid code injection (security)
     sanitise_text($route);
@@ -42,13 +57,13 @@ function serve_request($request_variables = [])
         // route not found so : http error 404 not found
         http_response_code(404);
 
-        if(isset($routes['RouteNotFound'])){
+        if(isset($routes['@RouteNotFound'])){
             // customizable response
-            $request_variables['RouteNotFound'] = $route;
-            ($routes['RouteNotFound'])($request_variables);
+            $request_variables['@extra']['wrong_route'] = $route;
+            ($routes['@RouteNotFound'])($request_variables);
         } else {
             // default fall-back response
-            echo "RouteNotFound:$route";
+            echo "(default fallback) RouteNotFound: $route";
         }
     }
 }

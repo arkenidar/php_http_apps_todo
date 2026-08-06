@@ -18,12 +18,8 @@ $routes[''] = function ($request_variables) {
     redirect_to('todo_list');
 };
 
-$routes['RouteNotFound'] = function ($request_variables) {
-    $route = $request_variables['RouteNotFound'];
-
-    // avoid code injection (security)
-    sanitise_text($route);
-
+$routes['@RouteNotFound'] = function ($request_variables) {
+    $route = $request_variables['@extra']['wrong_route'];
     // you can also respond with a template etc like normal
-    echo "RouteNotFound:$route";
+    echo "RouteNotFound: $route";
 };
