@@ -12,3 +12,9 @@ require_once '../routes/routes_user.php';
 $routes[''] = function ($request_variables) {
     redirect_to('todo_list');
 };
+
+$routes['RouteNotFound'] = function ($request_variables) {
+    $route = $request_variables['RouteNotFound'];
+    // you can also respond with a template etc like normal
+    echo "RouteNotFound:$route";
+};
