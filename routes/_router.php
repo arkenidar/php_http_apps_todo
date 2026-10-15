@@ -13,9 +13,12 @@ require_once '../routes/routes_todo.php';
 // file for routes
 require_once '../routes/routes_user.php';
 
-// home page redirect to todo_list
+// file for routes
+require_once '../routes/routes_chat.php';
+
+// home page redirect to chat_list
 $routes[''] = function ($request_variables) {
-    redirect_to('todo_list');
+    redirect_to('chat_list');
 };
 
 $routes['@RouteNotFound'] = function ($request_variables) {

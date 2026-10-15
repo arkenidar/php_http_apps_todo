@@ -3,7 +3,7 @@
 ## Command-Line instructions
 - Install PHP and SQLite (this for Ubuntu):
   `sudo apt install php php-sqlite3 sqlitebrowser`
-- Activate PHP Local Server (<http://localhost:8080/?r=todo_list>), run from the
+- Activate PHP Local Server (<http://localhost:8080/?r=chat_list>), run from the
   project root:
   `php -S localhost:8080 -t www -d session.save_path="$PWD/tmp/sessions"`
   (This points sessions at the writable, project-local `tmp/sessions/` directory.
@@ -15,6 +15,11 @@
   omitted, but add `-d opcache.enable=0` (OPcache can cause issues there):
   `php -S localhost:8080 -t www -d opcache.enable=0`
 
+## features.
+- Multi-user chat messaging (`?r=chat_list`): post a message and every logged-in
+  user sees it, with near-real-time polling updates.
+- Original To-Do list (`?r=todo_list`) kept alongside for reference.
+
 ## example installations.
-- <https://arkenidar.com/apps/php_http_apps_todo/?r=todo_list>
-- <http://localhost:8080/?r=todo_list>
+- <https://arkenidar.com/apps/php_http_apps_todo/?r=chat_list>
+- <http://localhost:8080/?r=chat_list>

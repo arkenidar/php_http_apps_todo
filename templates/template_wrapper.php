@@ -25,6 +25,7 @@
 <body>
 
     <?php
+    echo '<a href="router.php?r=chat_list">Chat</a> | ';
     if (isset($_SESSION['user'])) {
         echo 'Logged in as ' . $_SESSION['user'] . ' | ';
         echo '<a href="router.php?r=user_logout">Logout</a>';

@@ -13,6 +13,14 @@ CREATE TABLE `users` (
     `password` TEXT
 );
 
+CREATE TABLE `messages` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `body` TEXT,
+    `user_id` INTEGER,
+    `username` TEXT,
+    `created_at` INTEGER
+);
+
 INSERT INTO `todos` VALUES (1, 'task #2', 0);
 
 INSERT INTO `todos` VALUES (2, 'task #3', 0);
