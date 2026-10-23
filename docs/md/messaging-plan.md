@@ -1,3 +1,9 @@
+# PROMPT
+
+https://github.com/arkenidar/php_http_apps_todo use to craft an example ... multi-user chat-messaging web-platform
+
+# PLAN
+
 I've explored the codebase thoroughly. Here's what I found and my proposed plan.
 
 ## What the repo already does (conventions to follow)
